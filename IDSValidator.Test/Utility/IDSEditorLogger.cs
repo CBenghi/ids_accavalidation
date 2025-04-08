@@ -27,10 +27,8 @@ namespace IDSValidator.Test.Utility
                 {
                     if (pair.Key == "errorCode")
                         error.Code = (int?)pair.Value;
-
-                    else if (pair.Key == "location")
+                    else if (pair.Value is NodeIdentification nodeIdentification)
                     {
-                        var nodeIdentification = (NodeIdentification)pair.Value;
                         error.StartLineNumber = nodeIdentification.StartLineNumber;
                         error.StartLinePosition = nodeIdentification.StartLinePosition;
                         error.NodePath = nodeIdentification.PositionalIdentifier;

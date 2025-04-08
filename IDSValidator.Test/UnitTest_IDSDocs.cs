@@ -30,10 +30,23 @@ namespace IDSValidator.Test
             List<Exception> exceptions = [];
             foreach (var file in files.OrderBy(x => x))
             {
-                var xmlString = GetXMLString(file);                
+                Debug.WriteLine($"=== Processing file: {file}");
+				var xmlString = GetXMLString(file);                
                     
                 var stream = IDSValidatorUtility.GenerateStreamFromString(xmlString);
-                var singleAuditOptions = new SingleAuditOptions
+                
+                string streamContent;
+				using (var reader = new StreamReader(stream))
+				{
+					streamContent = reader.ReadToEnd();
+                    stream.Position = 0; // Reset the stream position for further processing
+                    var lns = streamContent.Split([Environment.NewLine], StringSplitOptions.None);
+					var lineCount = lns.Length;
+                    Debug.WriteLine($"Line count is {lineCount}");
+                    Assert.IsFalse(lineCount == 1, "We are expecting multiple lines in the stream.");
+				}
+
+				var singleAuditOptions = new SingleAuditOptions
                 {
                     IdsVersion = IdsLib.IdsSchema.IdsNodes.IdsVersion.Ids1_0,
                     OmitIdsContentAudit = false,
